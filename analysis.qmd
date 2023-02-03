@@ -23,8 +23,17 @@ x <- read_rds("data/ec.rds")
 #| label: plotting
 x |> 
   mutate(state = str_replace(county_name, ".*, ", "")) |> 
-  slice_sample(n = 10)
-
+  select(state, pop2018, ec_county) |> 
+  drop_na() |> 
+  summarize(total_pop = sum(pop2018), 
+            ec = mean(ec_county),
+            .by = state)
+  ggplot(
+    aes(
+      x = total_pop,
+      y = ec))+
+    geom_point()+
+    geom_smooth(formula = y ~ x,method = "lm", se = FALSE)
 ```
 
 
